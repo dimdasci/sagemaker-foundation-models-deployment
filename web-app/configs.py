@@ -11,7 +11,7 @@ key_txt2img_sm_endpoint = "proto-foundation-ai-txt2img-sm-endpoint"
 # parameter name from GenerativeAiDemoWebStack
 key_txt2nlu_api_endpoint = "proto-foundation-ai-txt2nlu-endpoint" 
 # this value is from GenerativeAiTxt2nluSagemakerStack
-key_txt2nlu_sm_endpoint = "txt2nlu_sm_endpoint"   
+key_txt2nlu_sm_endpoint = "proto-foundation-ai-txt2nlu-sm-endpoint"   
 
 def get_parameter(name):
     """
