@@ -5,7 +5,7 @@ from construct.sagemaker_endpoint_construct import SageMakerEndpointConstruct
 from constructs import Construct
 
 
-class Txt2imgSagemakerStack(Stack):
+class Txt2nluSagemakerStack(Stack):
     def __init__(
         self, scope: Construct, construct_id: str, model_info, **kwargs
     ) -> None:
@@ -70,10 +70,10 @@ class Txt2imgSagemakerStack(Stack):
 
         endpoint = SageMakerEndpointConstruct(
             self,
-            "ProtoFoundationAITxt2Img",
+            "ProtoFoundationAITxt2Nlu",
             project_prefix="ProtoFoundationAI",
             role_arn=role.role_arn,
-            model_name="StableDiffusionText2Img",
+            model_name="HuggingfaceText2TextFlan",
             model_bucket_name=model_info["model_bucket_name"],
             model_bucket_key=model_info["model_bucket_key"],
             model_docker_image=model_info["model_docker_image"],
@@ -82,11 +82,13 @@ class Txt2imgSagemakerStack(Stack):
             instance_count=1,
             instance_type=model_info["instance_type"],
             environment={
-                "MMS_MAX_RESPONSE_SIZE": "20000000",
-                "SAGEMAKER_CONTAINER_LOG_LEVEL": "20",
+                "MODEL_CACHE_ROOT": "/opt/ml/model",
+                "SAGEMAKER_ENV": "1",
+                "SAGEMAKER_MODEL_SERVER_TIMEOUT": "3600",
+                "SAGEMAKER_MODEL_SERVER_WORKERS": "1",
                 "SAGEMAKER_PROGRAM": "inference.py",
-                "SAGEMAKER_REGION": model_info["region_name"],
-                "SAGEMAKER_SUBMIT_DIRECTORY": "/opt/ml/model/code",
+                "SAGEMAKER_SUBMIT_DIRECTORY": "/opt/ml/model/code/",
+                "TS_DEFAULT_WORKERS_PER_MODEL": "1",
             },
             deploy_enable=True,
         )
@@ -97,7 +99,7 @@ class Txt2imgSagemakerStack(Stack):
 
         ssm.StringParameter(
             self,
-            "ProtoFoundationAITxt2ImgSmEndpoint",
-            parameter_name="proto-foundation-ai-txt2img-sm-endpoint",
+            "ProtoFoundationAITxt2NluSmEndpoint",
+            parameter_name="proto-foundation-ai-txt2nlu-sm-endpoint",
             string_value=endpoint.endpoint_name,
         )
