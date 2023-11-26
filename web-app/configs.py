@@ -6,7 +6,7 @@ print(f"Config, Region: {region_name}")
 # parameter name from GenerativeAiDemoWebStack
 key_txt2img_api_endpoint = "proto-foundation-ai-txt2img-endpoint" 
 # this value is from GenerativeAiTxt2ImgSagemakerStack
-key_txt2img_sm_endpoint = "txt2img_sm_endpoint"   
+key_txt2img_sm_endpoint = "proto-foundation-ai-txt2img-sm-endpoint"   
 
 # parameter name from GenerativeAiDemoWebStack
 key_txt2nlu_api_endpoint = "proto-foundation-ai-txt2nlu-endpoint" 
