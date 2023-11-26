@@ -69,6 +69,18 @@ test:
 # AWS DEPLOYMENT COMMANDS                                                       #
 #################################################################################
 
+# build docker image from web-app folder
+build_webapp:
+	docker build -t web-app ./web-app
+
+# run docker image from web-app folder
+run_webapp:
+	docker run -p 8501:8501 web-app
+
+#################################################################################
+# AWS DEPLOYMENT COMMANDS                                                       #
+#################################################################################
+
 # validate if profile is set and has a valid value
 validate_profile:
 ifndef profile
