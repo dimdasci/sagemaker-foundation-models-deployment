@@ -1,7 +1,8 @@
-import streamlit as st
 import os
 
+import streamlit as st
 from PIL import Image
+
 image = Image.open("./img/sagemaker.png")
 st.image(image, width=80)
 

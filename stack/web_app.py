@@ -11,40 +11,14 @@ from constructs import Construct
 
 class WebStack(Stack):
     def __init__(
-        self, scope: Construct, construct_id: str, vpc: ec2.IVpc, **kwargs
+        self,
+        scope: Construct,
+        construct_id: str,
+        vpc: ec2.IVpc,
+        role: iam.Role,
+        **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
-
-        # Defines role for the AWS Lambda functions
-        role = iam.Role(
-            self,
-            "ProtoFoundationAILambdaPolicy",
-            role_name="proto-foundation-ai-lambda-policy",
-            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
-        )
-        role.add_managed_policy(
-            iam.ManagedPolicy.from_aws_managed_policy_name(
-                "service-role/AWSLambdaBasicExecutionRole"
-            )
-        )
-        role.add_managed_policy(
-            iam.ManagedPolicy.from_aws_managed_policy_name(
-                "service-role/AWSLambdaVPCAccessExecutionRole"
-            )
-        )
-        role.attach_inline_policy(
-            iam.Policy(
-                self,
-                "sagemaker-invoke-policy",
-                statements=[
-                    iam.PolicyStatement(
-                        effect=iam.Effect.ALLOW,
-                        actions=["sagemaker:InvokeEndpoint"],
-                        resources=["*"],
-                    )
-                ],
-            )
-        )
 
         # Defines an AWS Lambda function for Image Generation service
         lambda_txt2img = _lambda.Function(
@@ -151,13 +125,13 @@ class WebStack(Stack):
 
         ssm.StringParameter(
             self,
-            "ProtoFoundationAITxt2ImgEndpoint",
+            "ProtoFoundationAITxt2ImgEndpointParameter",
             parameter_name="proto-foundation-ai-txt2img-endpoint",
             string_value=txt2img_apigw_endpoint.url,
         )
         ssm.StringParameter(
             self,
-            "ProtoFoundationAITxt2NluEndpoint",
+            "ProtoFoundationAITxt2NluEndpointParameter",
             parameter_name="proto-foundation-ai-txt2nlu-endpoint",
             string_value=txt2nlu_apigw_endpoint.url,
         )

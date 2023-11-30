@@ -8,24 +8,6 @@ class SageMakerEndpointConstruct(Construct):
     Represents an AWS CDK construct for defining and deploying a SageMaker endpoint
     along with associated configurations.
 
-    Args:
-        scope (Construct): The construct scope within which this construct is defined.
-        construct_id (str): The identifier for this construct. Must be unique within
-            the scope of the parent construct.
-        project_prefix (str): The prefix to be used for naming SageMaker resources.
-        role_arn (str): The ARN of the IAM role that SageMaker will assume to create
-            and deploy the model.
-        model_name (str): The name of the SageMaker model.
-        model_bucket_name (str): The name of the S3 bucket containing the SageMaker model.
-        model_bucket_key (str): The key (path) of the SageMaker model within the S3 bucket.
-        model_docker_image (str): The Docker image URI for the SageMaker model.
-        variant_name (str): The name of the production variant for the model.
-        variant_weight (int): The initial weight for the model variant.
-        instance_count (int): The number of instances to deploy for the model variant.
-        instance_type (str): The EC2 instance type for the deployed model instances.
-        environment (dict): Environment variables to set for the SageMaker model.
-        deploy_enable (bool): A flag indicating whether to deploy the SageMaker endpoint.
-
     Attributes:
         deploy_enable (bool): A flag indicating whether the SageMaker endpoint is set to deploy.
         endpoint (sagemaker.CfnEndpoint): The SageMaker endpoint resource, created when
@@ -43,8 +25,7 @@ class SageMakerEndpointConstruct(Construct):
         project_prefix: str,
         role_arn: str,
         model_name: str,
-        model_bucket_name: str,
-        model_bucket_key: str,
+        model_data_url: str,
         model_docker_image: str,
         variant_name: str,
         variant_weight: int,
@@ -64,8 +45,7 @@ class SageMakerEndpointConstruct(Construct):
             role_arn (str): The ARN of the IAM role that SageMaker will assume to create
                 and deploy the model.
             model_name (str): The name of the SageMaker model.
-            model_bucket_name (str): The name of the S3 bucket containing the SageMaker model.
-            model_bucket_key (str): The key (path) of the SageMaker model within the S3 bucket.
+            model_data_url (str): The name of the S3 bucket containing the SageMaker model.
             model_docker_image (str): The Docker image URI for the SageMaker model.
             variant_name (str): The name of the production variant for the model.
             variant_weight (int): The initial weight for the model variant.
@@ -87,11 +67,11 @@ class SageMakerEndpointConstruct(Construct):
             containers=[
                 sagemaker.CfnModel.ContainerDefinitionProperty(
                     image=model_docker_image,
-                    model_data_url=f"s3://{model_bucket_name}/{model_bucket_key}",
+                    model_data_url=model_data_url,
                     environment=environment,
                 )
             ],
-            model_name=f"{project_prefix}-{model_name}-Model",
+            model_name=f"{project_prefix}-{model_name}-model",
         )
 
         config = sagemaker.CfnEndpointConfig(

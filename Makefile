@@ -52,8 +52,8 @@ clean_cdk:
 
 ## Format using Black
 format: 
-	isort src stack construct --profile black
-	black src stack construct
+	isort src stack construct web-app app.py --profile black
+	black src stack construct web-app app.py
 
 ## Lint using flake8
 lint:

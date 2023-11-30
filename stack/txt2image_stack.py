@@ -5,68 +5,11 @@ from construct.sagemaker_endpoint_construct import SageMakerEndpointConstruct
 from constructs import Construct
 
 
-class Txt2imgSagemakerStack(Stack):
+class Txt2ImgSagemakerStack(Stack):
     def __init__(
-        self, scope: Construct, construct_id: str, model_info, **kwargs
+        self, scope: Construct, construct_id: str, model_info, role: iam.Role, **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
-
-        role = iam.Role(
-            self,
-            "ProtoFoundationAISageMakerPolicy",
-            role_name="proto-foundation-ai-sagemaker-policy",
-            assumed_by=iam.ServicePrincipal("sagemaker.amazonaws.com"),
-        )
-        role.add_managed_policy(
-            iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess")
-        )
-
-        sts_policy = iam.Policy(
-            self,
-            "ProtoFoundationAIDeployPolicySts",
-            statements=[
-                iam.PolicyStatement(
-                    effect=iam.Effect.ALLOW, actions=["sts:AssumeRole"], resources=["*"]
-                )
-            ],
-        )
-
-        logs_policy = iam.Policy(
-            self,
-            "ProtoFoundationAIDeployPolicyLogs",
-            statements=[
-                iam.PolicyStatement(
-                    effect=iam.Effect.ALLOW,
-                    actions=[
-                        "cloudwatch:PutMetricData",
-                        "logs:CreateLogStream",
-                        "logs:PutLogEvents",
-                        "logs:CreateLogGroup",
-                        "logs:DescribeLogStreams",
-                        "ecr:GetAuthorizationToken",
-                    ],
-                    resources=["*"],
-                )
-            ],
-        )
-
-        ecr_policy = iam.Policy(
-            self,
-            "ProtoFoundationAIDeployPolicyEcr",
-            statements=[
-                iam.PolicyStatement(
-                    effect=iam.Effect.ALLOW,
-                    actions=[
-                        "ecr:*",
-                    ],
-                    resources=["*"],
-                )
-            ],
-        )
-
-        role.attach_inline_policy(sts_policy)
-        role.attach_inline_policy(logs_policy)
-        role.attach_inline_policy(ecr_policy)
 
         endpoint = SageMakerEndpointConstruct(
             self,
@@ -74,9 +17,8 @@ class Txt2imgSagemakerStack(Stack):
             project_prefix="ProtoFoundationAI",
             role_arn=role.role_arn,
             model_name="StableDiffusionText2Img",
-            model_bucket_name=model_info["model_bucket_name"],
-            model_bucket_key=model_info["model_bucket_key"],
-            model_docker_image=model_info["model_docker_image"],
+            model_data_url=model_info["model_data_url"],
+            model_docker_image=model_info["image"],
             variant_name="AllTraffic",
             variant_weight=1,
             instance_count=1,
@@ -91,9 +33,7 @@ class Txt2imgSagemakerStack(Stack):
             deploy_enable=True,
         )
 
-        endpoint.node.add_dependency(sts_policy)
-        endpoint.node.add_dependency(logs_policy)
-        endpoint.node.add_dependency(ecr_policy)
+        endpoint.node.add_dependency(role)
 
         ssm.StringParameter(
             self,

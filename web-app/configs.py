@@ -4,21 +4,22 @@ region_name = boto3.Session().region_name
 print(f"Config, Region: {region_name}")
 
 # parameter name from GenerativeAiDemoWebStack
-key_txt2img_api_endpoint = "proto-foundation-ai-txt2img-endpoint" 
+key_txt2img_api_endpoint = "proto-foundation-ai-txt2img-endpoint"
 # this value is from GenerativeAiTxt2ImgSagemakerStack
-key_txt2img_sm_endpoint = "proto-foundation-ai-txt2img-sm-endpoint"   
+key_txt2img_sm_endpoint = "proto-foundation-ai-txt2img-sm-endpoint"
 
 # parameter name from GenerativeAiDemoWebStack
-key_txt2nlu_api_endpoint = "proto-foundation-ai-txt2nlu-endpoint" 
+key_txt2nlu_api_endpoint = "proto-foundation-ai-txt2nlu-endpoint"
 # this value is from GenerativeAiTxt2nluSagemakerStack
-key_txt2nlu_sm_endpoint = "proto-foundation-ai-txt2nlu-sm-endpoint"   
+key_txt2nlu_sm_endpoint = "proto-foundation-ai-txt2nlu-sm-endpoint"
+
 
 def get_parameter(name):
     """
     This function retrieves a specific value from Systems Manager"s ParameterStore.
-    """     
-    ssm_client = boto3.Session().client("ssm",region_name=region_name)
+    """
+    ssm_client = boto3.Session().client("ssm", region_name=region_name)
     response = ssm_client.get_parameter(Name=name)
     value = response["Parameter"]["Value"]
-    
+
     return value

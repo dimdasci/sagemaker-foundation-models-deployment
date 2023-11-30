@@ -1,0 +1,18 @@
+huggingface-text2text-flan-t5-xl:
+  model_data_url: s3://jumpstart-cache-prod-us-east-1/huggingface-text2text/huggingface-text2text-flan-t5-xl/artifacts/inference-prepack/v2.0.0/
+  image: 763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-tgi-inference:2.0.1-tgi1.1.0-gpu-py39-cu118-ubuntu20.04
+  instance_type: ml.g5.2xlarge
+  source: s3://jumpstart-cache-prod-us-east-1/source-directory-tarballs/huggingface/inference/text2text/v2.0.0/sourcedir.tar.gz
+  region_name: us-east-1
+huggingface-textgeneration-falcon-7b-bf16:
+  model_data_url: s3://jumpstart-cache-prod-us-east-1/huggingface-infer/prepack/v2.0.0/infer-prepack-huggingface-textgeneration-falcon-7b-bf16.tar.gz
+  image: 763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-inference:1.13.1-transformers4.26.0-gpu-py39-cu117-ubuntu20.04
+  instance_type: ml.g5.2xlarge
+  source: s3://jumpstart-cache-prod-us-east-1/source-directory-tarballs/huggingface/inference/textgeneration/v3.0.0/sourcedir.tar.gz
+  region_name: us-east-1
+model-txt2img-stabilityai-stable-diffusion-v2:
+  model_data_url: s3://jumpstart-cache-prod-us-east-1/stabilityai-txt2img/model-txt2img-stabilityai-stable-diffusion-v2/artifacts/inference-prepack/v1.0.0/
+  image: 763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-inference:1.10.2-transformers4.17.0-gpu-py38-cu113-ubuntu20.04
+  instance_type: ml.p3.2xlarge
+  source: s3://jumpstart-cache-prod-us-east-1/source-directory-tarballs/stabilityai/inference/txt2img/v1.2.3/sourcedir.tar.gz
+  region_name: us-east-1

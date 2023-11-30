@@ -50,6 +50,8 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
     region_name = session.region_name
 
     # Retrieve the URIs of the JumpStart resources
+
+    # The model artifact Amazon S3 URI
     base_model_uri: str = model_uris.retrieve(
         region=region_name,
         model_id=model_id,
@@ -59,6 +61,7 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
     )
 
     if instance_type is None:
+        # The model default instance type
         instance_type: str = instance_types.retrieve_default(
             model_id=model_id,
             model_version=model_version,
@@ -66,6 +69,7 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
             sagemaker_session=Session(boto_session=session)
         )
 
+    # The model inference script Amazon S3 URI
     script_uri: str = script_uris.retrieve(
         region=region_name,
         model_id=model_id,
@@ -74,6 +78,7 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
         sagemaker_session=Session(boto_session=session),
     )
 
+    # The model inference Docker image URI
     image_uri: str = image_uris.retrieve(
         region=region_name,
         framework=None,
@@ -94,10 +99,11 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
 
     # Update config with new values
     config[model_id] = {
-        "base_model_uri": base_model_uri,
-        "script_uri": script_uri,
-        "image_uri": image_uri,
+        "model_data_url": base_model_uri,
+        "source": script_uri,
+        "image": image_uri,
         "instance_type": instance_type,
+        "region_name": region_name,
     }
 
     # Write config file

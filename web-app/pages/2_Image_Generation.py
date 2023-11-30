@@ -1,11 +1,11 @@
-import streamlit as st
-import requests
-import numpy as np
 import time
 
+import numpy as np
+import requests
+import streamlit as st
 from configs import *
-
 from PIL import Image
+
 image = Image.open("./img/sagemaker.png")
 st.image(image, width=80)
 st.header("Image Generation")
@@ -25,33 +25,37 @@ with st.spinner("Retrieving configurations..."):
             all_configs_loaded = True
             time.sleep(10)
 
-    endpoint_name = st.sidebar.text_input("SageMaker Endpoint Name:",sm_endpoint)
-    url = st.sidebar.text_input("API GW Url:",api_endpoint)
+    endpoint_name = st.sidebar.text_input("SageMaker Endpoint Name:", sm_endpoint)
+    url = st.sidebar.text_input("API GW Url:", api_endpoint)
 
 
 prompt = st.text_area("Input Image description:", """Cat in a garden at sunset""")
 
 if st.button("Generate image"):
-    if endpoint_name == "" or prompt == "" or url == "":      
+    if endpoint_name == "" or prompt == "" or url == "":
         st.error("Please enter a valid endpoint name, API gateway url and prompt!")
     else:
         with st.spinner("Wait for it..."):
             try:
-                r = requests.post(url,json={"prompt":prompt,"endpoint_name":endpoint_name},timeout=180)
+                r = requests.post(
+                    url,
+                    json={"prompt": prompt, "endpoint_name": endpoint_name},
+                    timeout=180,
+                )
                 data = r.json()
                 image_array = data["image"]
                 st.image(np.array(image_array))
 
             except requests.exceptions.ConnectionError as errc:
-                st.error("Error Connecting:",errc)
-                
+                st.error("Error Connecting:", errc)
+
             except requests.exceptions.HTTPError as errh:
-                st.error("Http Error:",errh)
-                
+                st.error("Http Error:", errh)
+
             except requests.exceptions.Timeout as errt:
-                st.error("Timeout Error:",errt)    
-                
+                st.error("Timeout Error:", errt)
+
             except requests.exceptions.RequestException as err:
-                st.error("OOps: Something Else",err)                
-                
+                st.error("OOps: Something Else", err)
+
         st.success("Done!")
