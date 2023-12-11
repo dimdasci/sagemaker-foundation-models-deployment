@@ -1,7 +1,8 @@
 import boto3
 import click
 import yaml
-from sagemaker import Session, image_uris, model_uris, script_uris, instance_types
+from sagemaker import Session, image_uris, instance_types, model_uris, script_uris
+
 
 @click.command()
 @click.option(
@@ -35,17 +36,21 @@ from sagemaker import Session, image_uris, model_uris, script_uris, instance_typ
 @click.option(
     "--config_file",
     "-c",
-    type=click.Path(
-        file_okay=True, dir_okay=False, writable=True, readable=True
-    ),
+    type=click.Path(file_okay=True, dir_okay=False, writable=True, readable=True),
     required=True,
     help="Path to the config file to write to.",
 )
-def main(profile: str, model_id: str, model_version: str, instance_type: str, config_file: str):
+def main(
+    profile: str,
+    model_id: str,
+    model_version: str,
+    instance_type: str,
+    config_file: str,
+):
     """
     Retrieves the configuration of a SageMaker model and stores it in the config file as YAML.
     """
-    
+
     session = boto3.Session(profile_name=profile)
     region_name = session.region_name
 
@@ -66,7 +71,7 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
             model_id=model_id,
             model_version=model_version,
             scope="inference",
-            sagemaker_session=Session(boto_session=session)
+            sagemaker_session=Session(boto_session=session),
         )
 
     # The model inference script Amazon S3 URI
@@ -99,6 +104,7 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
 
     # Update config with new values
     config[model_id] = {
+        "model_version": model_version,
         "model_data_url": base_model_uri,
         "source": script_uri,
         "image": image_uri,
@@ -109,6 +115,7 @@ def main(profile: str, model_id: str, model_version: str, instance_type: str, co
     # Write config file
     with open(config_file, "w") as f:
         yaml.dump(config, f)
+
 
 if __name__ == "__main__":
     main()
