@@ -93,17 +93,17 @@ endif
 	$(eval REGION := $(shell aws configure get region --profile $(profile)))
 	@echo "Deploying to $(profile) environment in region $(REGION) and account $(ACCOUNT)"
 
-deploy: validate_env_type
+deploy: validate_profile
 # set environment variable JSII_SILENCE_WARNING_DEPRECATED_NODE_VERSION=1 to suppress warning
 	@echo "   ... AWS CDK deploy started"
-	@JSII_SILENCE_WARNING_DEPRECATED_NODE_VERSION=1 cdk deploy \
-	--profile $(profile) '**'
+	@JSII_SILENCE_WARNING_DEPRECATED_NODE_VERSION=1 \
+	cdk deploy --profile $(profile) '**'
 	@echo "   ... AWS CDK deploy completed"
 
-destroy: validate_env_type
+destroy: validate_profile
 	@echo "   ... AWS CDK destroy started"
-	cdk destroy --profile $(env_type) '**'
+	cdk destroy --profile $(profile) '**'
 	rm -Rf ./cdk.out/asset*
 	@echo "   ... AWS CDK destroy completed"
 
-.PHONY: validate_env_type deploy destroy sync_assets
+.PHONY: validate_profile deploy destroy sync_assets

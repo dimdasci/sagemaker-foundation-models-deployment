@@ -1,12 +1,11 @@
 import aws_cdk as cdk
-import boto3
 import yaml
+from stack.lambdas import LambdasStack
 from stack.roles_stack import SageMakerRoles
 from stack.txt2image_stack import Txt2ImgSagemakerStack
 from stack.txt2nlu_stack import Txt2NluSagemakerStack
 from stack.vpc_network import VpcNetworkStack
 from stack.web_app import WebStack
-
 
 app = cdk.App()
 
@@ -36,11 +35,16 @@ Txt2NluSagemakerStack(
     model_info=TXT2NLU_MODEL_INFO,
     role=role_stack.sm_role,
 )
+LambdasStack(
+    app,
+    "ProtoFoundationAILambdasStack",
+    vpc=network_stack.vpc,
+    role=role_stack.lambda_role,
+)
 WebStack(
     app,
     "ProtoFoundationAIWebStack",
     vpc=network_stack.vpc,
-    role=role_stack.lambda_role,
 )
 
 

@@ -6,7 +6,7 @@ RUN pip3 install -r requirements.txt
 COPY . .
 CMD streamlit run home.py \
     --server.headless true \
-    ----server.port=8501 \
+    --server.port=8501 \
     --browser.serverAddress="0.0.0.0" \
     --server.enableCORS false \
     --browser.gatherUsageStats false
